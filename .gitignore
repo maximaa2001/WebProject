@@ -1,0 +1,4 @@
+.idea/
+src/main/resources/logs.log
+target/
+Servlet.iml
