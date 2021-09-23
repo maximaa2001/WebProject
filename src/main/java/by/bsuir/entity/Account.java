@@ -12,6 +12,9 @@ public class Account extends BaseEntity {
         this.password = password;
     }
 
+    public Account() {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -3,7 +3,7 @@ package by.bsuir.entity;
 import java.util.Objects;
 import java.util.Set;
 
-public class User extends Account{
+public class User extends Account {
     private boolean isApproved;
     private Set<Product> products;
 
@@ -11,6 +11,9 @@ public class User extends Account{
         super(id, login, password);
         this.isApproved = isApproved;
         this.products = products;
+    }
+
+    public User() {
     }
 
     @Override

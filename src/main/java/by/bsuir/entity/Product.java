@@ -14,7 +14,8 @@ public class Product extends BaseEntity {
         this.user = user;
     }
 
-
+    public Product() {
+    }
 
     @Override
     public boolean equals(Object o) {

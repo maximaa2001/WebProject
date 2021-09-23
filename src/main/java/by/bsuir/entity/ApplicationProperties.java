@@ -7,10 +7,11 @@ import java.io.IOException;
 public class ApplicationProperties {
     private static ApplicationProperties instance;
 
-    private ApplicationProperties(){}
+    private ApplicationProperties() {
+    }
 
-    public static ApplicationProperties getInstance(){
-        if(instance == null){
+    public static ApplicationProperties getInstance() {
+        if (instance == null) {
             instance = new ApplicationProperties();
         }
         return instance;
