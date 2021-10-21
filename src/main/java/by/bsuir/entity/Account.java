@@ -5,12 +5,15 @@ import java.util.Objects;
 public class Account extends BaseEntity {
     private String login;
     private String password;
+    private String number;
 
-    public Account(long id, String login, String password) {
+    public Account(long id, String login, String password, String number) {
         super(id);
         this.login = login;
         this.password = password;
+        this.number = number;
     }
+
 
     public Account() {
     }
@@ -21,12 +24,12 @@ public class Account extends BaseEntity {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Account account = (Account) o;
-        return Objects.equals(login, account.login) && Objects.equals(password, account.password);
+        return login.equals(account.login) && password.equals(account.password) && number.equals(account.number);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), login, password);
+        return Objects.hash(super.hashCode(), login, password, number);
     }
 
     @Override
@@ -34,6 +37,7 @@ public class Account extends BaseEntity {
         return "Account{" +
                 "login='" + login + '\'' +
                 ", password='" + password + '\'' +
+                "number = " + number +
                 '}' + super.toString();
     }
 
@@ -51,5 +55,13 @@ public class Account extends BaseEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 }

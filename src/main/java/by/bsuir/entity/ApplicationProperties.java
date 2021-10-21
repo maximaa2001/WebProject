@@ -6,11 +6,13 @@ import java.io.IOException;
 
 public class ApplicationProperties {
     private static ApplicationProperties instance;
+    private final PropertyReader propertyReader;
 
-    private ApplicationProperties() {
+    private ApplicationProperties() throws IOException {
+        propertyReader = new PropertyReader();
     }
 
-    public static ApplicationProperties getInstance() {
+    public static ApplicationProperties getInstance() throws IOException {
         if (instance == null) {
             instance = new ApplicationProperties();
         }
@@ -18,22 +20,23 @@ public class ApplicationProperties {
     }
 
     public String getUrl() throws IOException {
-        return (String) PropertyReader.getInstance().get("URL");
+        return propertyReader.getProperties().getProperty("URL");
     }
 
     public String getUser() throws IOException {
-        return (String) PropertyReader.getInstance().get("USER");
+        return  propertyReader.getProperties().getProperty("USER");
     }
 
     public String getPassword() throws IOException {
-        return (String) PropertyReader.getInstance().get("PASSWORD");
+        return propertyReader.getProperties().getProperty("PASSWORD");
     }
 
     public int getConnectionPoolSize() throws IOException {
-        return Integer.parseInt((String) PropertyReader.getInstance().get("connectionPoolSize"));
+        return Integer.parseInt(propertyReader.getProperties().getProperty("connectionPoolSize"));
     }
 
     public int getMaxConnectionPoolSize() throws IOException {
-        return Integer.parseInt((String) PropertyReader.getInstance().get("maxConnectionPoolSize"));
+        return Integer.parseInt(propertyReader.getProperties().getProperty("maxConnectionPoolSize"));
+
     }
 }

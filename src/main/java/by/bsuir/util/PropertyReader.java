@@ -1,20 +1,23 @@
 package by.bsuir.util;
 
-import java.io.FileNotFoundException;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class PropertyReader {
-    private static Properties instance;
+    private final Properties properties = new Properties();
 
-    private PropertyReader(){
+    public PropertyReader() throws IOException {
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("db.properties");
+        properties.load(inputStream);
     }
-    public static Properties getInstance() throws IOException {
-        if(instance == null){
-            instance = new Properties();
-            instance.load(new FileReader("src/main/resources/database.properties"));
-        }
-        return instance;
+
+    public Properties getProperties() throws IOException {
+        return properties;
     }
 }

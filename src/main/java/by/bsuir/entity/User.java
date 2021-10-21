@@ -6,9 +6,10 @@ import java.util.Set;
 public class User extends Account {
     private boolean isApproved;
     private Set<Product> products;
+    private long accountId;
 
-    public User(long id, String login, String password, boolean isApproved, Set<Product> products) {
-        super(id, login, password);
+    public User(long id, String login, String password, String number, boolean isApproved, Set<Product> products) {
+        super(id, login, password, number);
         this.isApproved = isApproved;
         this.products = products;
     }
@@ -36,6 +37,14 @@ public class User extends Account {
                 "isApproved=" + isApproved +
                 ", products=" + products +
                 '}' + super.toString();
+    }
+
+    public long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
     }
 
     public boolean isApproved() {

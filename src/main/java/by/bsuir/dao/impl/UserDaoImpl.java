@@ -3,6 +3,7 @@ package by.bsuir.dao.impl;
 import by.bsuir.dao.UserDao;
 import by.bsuir.db.ConnectionPool;
 import by.bsuir.entity.Account;
+import by.bsuir.entity.Admin;
 import by.bsuir.entity.User;
 import by.bsuir.exception.DaoException;
 import org.apache.log4j.Logger;
@@ -15,15 +16,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDaoImpl implements UserDao {
+public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     private static final Logger logger = Logger.getLogger(UserDaoImpl.class);
     private static UserDaoImpl instance;
-    private final String SQL_FIND_ALL = "SELECT account.login, account.password, user.id, user.isApproved FROM account INNER JOIN user ON user.Account_id = account.id";
-    private final String SQL_FIND_BY_ID = "SELECT account.login, account.password, user.id, user.isApproved FROM account INNER JOIN user ON user.Account_id = account.id WHERE user.id = ?";
-    private final String SQL_CREATE = "INSERT INTO user (isApproved,Account_id) VALUES (?,?)";
-    private final String SQL_FIND_ACCOUNT_ID = "SELECT user.Account_id FROM user WHERE user.id = ?";
-    private final String SQL_SET_APPROVE = "UPDATE user SET user.IsApproved = ? WHERE user.id = ?";
-    private final String SQL_FIND_USER_ID_BY_PRODUCT_ID = "SELECT product.User_id FROM product WHERE product.id = ?";
+    private final static String SQL_FIND_ALL = "SELECT account.login, account.password, account.number, user.id, user.isApproved FROM account INNER JOIN user ON user.Account_id = account.id";
+    private final static String SQL_FIND_ALL_UNAPPROVED = "SELECT account.login, account.password, account.number, user.id, user.isApproved FROM account INNER JOIN user ON user.Account_id = account.id WHERE user.isApproved = ?";
+    private final static String SQL_FIND_BY_ACCOUNT_ID = "SELECT account.login, account.password, account.number, user.id, user.isApproved FROM account INNER JOIN user ON user.Account_id = account.id WHERE account.id = ?";
+    private final static String SQL_FIND_BY_ID = "SELECT account.login, account.password, account.number, user.id, user.isApproved FROM account INNER JOIN user ON user.Account_id = account.id WHERE user.id = ?";
+    private final static String SQL_CREATE = "INSERT INTO user (isApproved,Account_id) VALUES (?,?)";
+    private final static String SQL_SET_APPROVE = "UPDATE user SET user.isApproved = ? WHERE user.id = ?";
+    private final static String SQL_FIND_USER_ID_BY_PRODUCT_ID = "SELECT product.User_id FROM product WHERE product.id = ?";
+    private final static String SQL_DELETE = "DELETE FROM user WHERE id = ?";
+    private final static String SQL_UPDATE = "UPDATE user SET user.isApproved = ? WHERE user.id = ?";
 
     private UserDaoImpl() {
     }
@@ -38,19 +42,13 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> findAll() throws DaoException {
         List<User> list = new ArrayList<>();
-        try (Connection connection = ConnectionPool.getInstance().takeConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
-                User user = new User();
-                user.setId(resultSet.getLong("user.id"));
-                user.setLogin(resultSet.getString("account.login"));
-                user.setPassword(resultSet.getString("account.password"));
-                user.setApproved(getApprove(resultSet.getInt("user.isApproved")));
-                user.setProducts(ProductDaoImpl.getInstance().getAllProductsByUserId(user.getId()));
+                User user = getUserFromResultSet(resultSet);
                 list.add(user);
             }
-        } catch (IOException | SQLException | InterruptedException e) {
+        } catch (SQLException e) {
             logger.warn(e);
             throw new DaoException(e);
         }
@@ -60,20 +58,14 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User findById(long id) throws DaoException {
         User user = null;
-        try (Connection connection = ConnectionPool.getInstance().takeConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_ID)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_ID)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                user = new User();
-                user.setId(resultSet.getLong("user.id"));
-                user.setLogin(resultSet.getString("account.login"));
-                user.setPassword(resultSet.getString("account.password"));
-                user.setApproved(getApprove(resultSet.getInt("user.isApproved")));
-                user.setProducts(ProductDaoImpl.getInstance().getAllProductsByUserId(user.getId()));
+                user = getUserFromResultSet(resultSet);
             }
             return user;
-        } catch (IOException | SQLException | InterruptedException e) {
+        } catch (SQLException e) {
             logger.warn(e);
             throw new DaoException(e);
         }
@@ -83,42 +75,30 @@ public class UserDaoImpl implements UserDao {
         return (result == 1);
     }
 
+
+    /*
+            First create account and install accountId in user
+     */
     @Override
     public boolean create(User entity) throws DaoException {
-        Account account = new Account();
-        account.setLogin(entity.getLogin());
-        account.setPassword(entity.getPassword());
-        if (AccountDaoImpl.getInstance().create(account)) {
-            account = AccountDaoImpl.getInstance().findByLogin(entity.getLogin());
-            try (Connection connection = ConnectionPool.getInstance().takeConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE)) {
-                preparedStatement.setInt(1, 0);
-                preparedStatement.setLong(2, account.getId());
-                preparedStatement.executeUpdate();
-            } catch (IOException | SQLException | InterruptedException e) {
-                logger.warn(e);
-                throw new DaoException(e);
-            }
-        } else {
-            return false;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE)) {
+            preparedStatement.setInt(1, 0);
+            preparedStatement.setLong(2, entity.getAccountId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            logger.warn(e);
+            throw new DaoException(e);
         }
         return true;
     }
 
     @Override
     public boolean deleteById(long id) throws DaoException {
-        try (Connection connection = ConnectionPool.getInstance().takeConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ACCOUNT_ID)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE)) {
             preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                long accountId = resultSet.getLong("user.Account_id");
-                AccountDaoImpl.getInstance().deleteById(accountId);
-                return true;
-            } else {
-                return false;
-            }
-        } catch (IOException | SQLException | InterruptedException e) {
+            int result = preparedStatement.executeUpdate();
+            return result == 1;
+        } catch (SQLException e) {
             logger.error(e);
             throw new DaoException(e.getMessage());
         }
@@ -126,21 +106,13 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean update(User entity) throws DaoException {
-        try (Connection connection = ConnectionPool.getInstance().takeConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ACCOUNT_ID)) {
-            preparedStatement.setLong(1, entity.getId());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                Account account = new Account();
-                account.setId(resultSet.getLong("user.Account_id"));
-                account.setLogin(entity.getLogin());
-                account.setPassword(entity.getPassword());
-                AccountDaoImpl.getInstance().update(account);
-                return true;
-            } else {
-                return false;
-            }
-        } catch (IOException | SQLException | InterruptedException e) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE)) {
+            int isApprove = entity.isApproved() ? 1 : 0;
+            preparedStatement.setInt(1, isApprove);
+            preparedStatement.setLong(2, entity.getId());
+            int result = preparedStatement.executeUpdate();
+            return result == 1;
+        } catch (SQLException e) {
             logger.error(e);
             throw new DaoException(e.getMessage());
         }
@@ -148,8 +120,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getUserByProductId(long id) throws DaoException {
-        try (Connection connection = ConnectionPool.getInstance().takeConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_USER_ID_BY_PRODUCT_ID)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_USER_ID_BY_PRODUCT_ID)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             long userId;
@@ -157,7 +128,7 @@ public class UserDaoImpl implements UserDao {
                 userId = resultSet.getLong("product.User_id");
                 return findById(userId);
             }
-        } catch (IOException | SQLException | InterruptedException e) {
+        } catch (SQLException e) {
             logger.error(e);
             throw new DaoException(e.getMessage());
         }
@@ -165,16 +136,60 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public User findUserByAccountId(long id) throws DaoException {
+        User user = null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_ACCOUNT_ID)) {
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                user = getUserFromResultSet(resultSet);
+                user.setAccountId(id);
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+            throw new DaoException(e.getMessage());
+        }
+        return user;
+    }
+
+    @Override
+    public List<User> findAllUnApprovedUser() throws DaoException {
+        List<User> users = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_UNAPPROVED)) {
+            preparedStatement.setLong(1, 0);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                User user = getUserFromResultSet(resultSet);
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+            throw new DaoException(e.getMessage());
+        }
+        return users;
+    }
+
+    @Override
     public boolean setUserApprove(long id) throws DaoException {
-        try (Connection connection = ConnectionPool.getInstance().takeConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_SET_APPROVE)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SET_APPROVE)) {
             preparedStatement.setInt(1, 1);
             preparedStatement.setLong(2, id);
             preparedStatement.executeUpdate();
             return true;
-        } catch (IOException | SQLException | InterruptedException e) {
+        } catch (SQLException e) {
             logger.error(e);
             throw new DaoException(e.getMessage());
         }
     }
+
+    private User getUserFromResultSet(ResultSet resultSet) throws SQLException {
+        User user = new User();
+        user.setId(resultSet.getLong("user.id"));
+        user.setLogin(resultSet.getString("account.login"));
+        user.setPassword(resultSet.getString("account.password"));
+        user.setNumber(resultSet.getString("account.number"));
+        user.setApproved(getApprove(resultSet.getInt("user.isApproved")));
+        return user;
+    }
+
 }

@@ -5,6 +5,6 @@ import by.bsuir.exception.DaoException;
 
 import java.util.Set;
 
-public interface ProductDao extends BaseDao<Product> {
+public interface ProductDao  {
     Set<Product> getAllProductsByUserId(long id) throws DaoException;
 }

@@ -1,0 +1,60 @@
+.fixed_down{
+    width: 100%;
+    height: 100px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: #242582;
+    display: flex;
+    justify-content: space-between;
+    font-family: Montserrat, serif;
+    color: white;
+}
+
+#footer_first_block{
+    margin-top: 5px;
+    margin-left: 20px;
+}
+
+#contacts{
+    font-size: 20px;
+}
+
+#telephone {
+    margin-top: 8px;
+    font-size: 15px;
+}
+
+#email{
+    margin-top: 5px;
+    font-size: 15px;
+}
+
+#footer_second_block{
+    align-self: end;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+#footer_third_block{
+    margin-top: 5px;
+    margin-right: 20px;
+}
+
+#footer_become_user{
+    font-size: 18px;
+}
+
+#footer_reg{
+    margin-top: 15px;
+}
+
+#footer_reg a{
+    margin-top: 15px;
+    color: white;
+}
+
+#footer_reg a:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}

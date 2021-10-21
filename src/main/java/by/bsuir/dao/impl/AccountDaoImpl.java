@@ -4,6 +4,7 @@ import by.bsuir.dao.AccountDao;
 import by.bsuir.db.ConnectionPool;
 import by.bsuir.entity.Account;
 import by.bsuir.exception.DaoException;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -14,15 +15,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AccountDaoImpl implements AccountDao {
+public class AccountDaoImpl extends AbstractDao<Account> implements AccountDao {
     private static final Logger logger = Logger.getLogger(AccountDaoImpl.class);
     private static AccountDaoImpl instance;
-    private final String SQL_FIND_ALL = "SELECT * FROM account";
-    private final String SQL_FIND_BY_LOGIN = "SELECT * FROM account WHERE login = ?";
-    private final String SQL_FIND_BY_ID = "SELECT * FROM account WHERE id = ?";
-    private final String SQL_CREATE = "INSERT INTO account (login, password) VALUES(?, ?)";
-    private final String SQL_DELETE = "DELETE FROM account WHERE id = ?";
-    private final String SQL_UPDATE = "UPDATE account SET account.login = ?, account.password = ? WHERE account.id = ?";
+    private final static String SQL_FIND_ALL = "SELECT * FROM account";
+    private final static String SQL_FIND_BY_LOGIN = "SELECT * FROM account WHERE login = ?";
+    private final static String SQL_FIND_BY_LOGIN_AND_PASSWORD = "SELECT * FROM account WHERE login = ? AND password = ?";
+    private final static String SQL_FIND_BY_ID = "SELECT * FROM account WHERE id = ?";
+    private final static String SQL_CREATE = "INSERT INTO account (login, password, number) VALUES(?, ?, ?)";
+    private final static String SQL_DELETE = "DELETE FROM account WHERE id = ?";
+    private final static String SQL_UPDATE = "UPDATE account SET account.login = ?, account.password = ?, account.number = ? WHERE account.id = ?";
+
 
     private AccountDaoImpl() {
     }
@@ -35,40 +38,56 @@ public class AccountDaoImpl implements AccountDao {
     }
 
     @Override
-    public Account findByLogin(String login) throws DaoException {
-        Account account = null;
-        ResultSet resultSet;
-        try (Connection connection = ConnectionPool.getInstance().takeConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_LOGIN)) {
+    public boolean findByLogin(String login) throws DaoException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_LOGIN)) {
             preparedStatement.setString(1, login);
-            resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                account = new Account();
-                account.setId(resultSet.getLong("account.id"));
-                account.setLogin(resultSet.getString("account.login"));
-                account.setPassword(resultSet.getString("account.password"));
-            }
-        } catch (IOException | SQLException | InterruptedException e) {
-            logger.warn(e);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            logger.log(Level.ERROR,e);
             throw new DaoException(e);
         }
-        return account;
+    }
+
+    @Override
+    public boolean findByLoginAndPassword(String login, String password) throws DaoException {
+        try(PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_LOGIN_AND_PASSWORD)) {
+            preparedStatement.setString(1,login);
+            preparedStatement.setString(2,password);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+        }catch (SQLException e){
+            logger.log(Level.ERROR,e);
+            throw new DaoException(e);
+        }
+    }
+
+    @Override
+    public long findIdByLogin(String login) throws DaoException {
+        Account account = new Account();
+        try(PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_LOGIN)) {
+            preparedStatement.setString(1,login);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                account = getAccountFromResultSet(resultSet);
+            }
+        }catch (SQLException e){
+            logger.log(Level.ERROR,e);
+            throw new DaoException(e);
+        }
+        return account.getId();
     }
 
     @Override
     public List<Account> findAll() throws DaoException {
         List<Account> list = new ArrayList<>();
-        try (Connection connection = ConnectionPool.getInstance().takeConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
-                Account account = new Account();
-                account.setId(resultSet.getLong("account.id"));
-                account.setLogin(resultSet.getString("account.login"));
-                account.setPassword(resultSet.getString("account.password"));
+                Account account = getAccountFromResultSet(resultSet);
                 list.add(account);
             }
-        } catch (IOException | SQLException | InterruptedException e) {
+        } catch (SQLException e) {
             logger.warn(e);
             throw new DaoException(e);
         }
@@ -78,79 +97,68 @@ public class AccountDaoImpl implements AccountDao {
     @Override
     public Account findById(long id) throws DaoException {
         Account account = null;
-        ResultSet resultSet;
-        try (Connection connection = ConnectionPool.getInstance().takeConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_ID)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_ID)) {
             preparedStatement.setLong(1, id);
-            resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                account = new Account();
-                account.setId(resultSet.getLong("account.id"));
-                account.setLogin(resultSet.getString("account.login"));
-                account.setPassword(resultSet.getString("account.password"));
+                account = getAccountFromResultSet(resultSet);
             }
-        } catch (IOException | SQLException | InterruptedException e) {
+        } catch (SQLException e) {
             logger.warn(e);
             throw new DaoException(e);
         }
         return account;
     }
 
-    @Override
+
     public boolean create(Account entity) throws DaoException {
-        String login = entity.getLogin();
-        Account createdAccount = findByLogin(login);
-        if (createdAccount == null) {
-            try (Connection connection = ConnectionPool.getInstance().takeConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE)) {
-                preparedStatement.setString(1, entity.getLogin());
-                preparedStatement.setString(2, entity.getPassword());
-                preparedStatement.executeUpdate();
-            } catch (IOException | SQLException | InterruptedException e) {
-                logger.warn(e);
-                throw new DaoException(e);
-            }
-        } else {
-            return false;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE)) {
+            preparedStatement.setString(1, entity.getLogin());
+            preparedStatement.setString(2, entity.getPassword());
+            preparedStatement.setString(3, entity.getNumber());
+            int result = preparedStatement.executeUpdate();
+            return result != 0;
+        } catch (SQLException e) {
+            logger.warn(e);
+            throw new DaoException(e);
         }
-        return true;
     }
 
     @Override
     public boolean deleteById(long id) throws DaoException {
-        Account accountById = findById(id);
-        if (accountById != null) {
-            try (Connection connection = ConnectionPool.getInstance().takeConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE)) {
-                preparedStatement.setLong(1, id);
-                preparedStatement.executeUpdate();
-            } catch (IOException | SQLException | InterruptedException e) {
-                logger.warn(e);
-                throw new DaoException(e);
-            }
-        } else {
-            return false;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE)) {
+            preparedStatement.setLong(1, id);
+            int result = preparedStatement.executeUpdate();
+            return result != 0;
+        } catch (SQLException e) {
+            logger.warn(e);
+            throw new DaoException(e);
         }
-        return true;
     }
 
 
     @Override
     public boolean update(Account entity) throws DaoException {
         boolean isUpdate = false;
-        try (Connection connection = ConnectionPool.getInstance().takeConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE)) {
             preparedStatement.setString(1, entity.getLogin());
             preparedStatement.setString(2, entity.getPassword());
-            preparedStatement.setLong(3, entity.getId());
+            preparedStatement.setString(3, entity.getNumber());
+            preparedStatement.setLong(4, entity.getId());
             int result = preparedStatement.executeUpdate();
-            if (result == 1) {
-                isUpdate = true;
-            }
-        } catch (IOException | SQLException | InterruptedException e) {
+            return  result != 0;
+        } catch (SQLException e) {
             logger.warn(e);
             throw new DaoException(e);
         }
-        return isUpdate;
+    }
+
+    private Account getAccountFromResultSet(ResultSet resultSet) throws SQLException {
+        Account account = new Account();
+        account.setId(resultSet.getLong("account.id"));
+        account.setLogin(resultSet.getString("account.login"));
+        account.setPassword(resultSet.getString("account.password"));
+        account.setNumber(resultSet.getString("account.number"));
+        return account;
     }
 }

@@ -1,6 +1,5 @@
 package by.bsuir.dao.impl;
 
-import by.bsuir.dao.BaseDao;
 import by.bsuir.db.ConnectionPool;
 import by.bsuir.entity.Account;
 import by.bsuir.entity.Admin;
@@ -15,11 +14,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminDaoImpl implements BaseDao<Admin> {
+@Deprecated
+public class AdminDaoImpl extends AbstractDao<Admin> {
     private static final Logger logger = Logger.getLogger(AccountDaoImpl.class);
     private static AdminDaoImpl instance;
-    private final String SQL_FIND_ALL = "SELECT account.login, account.password, admin.id FROM account INNER JOIN admin ON admin.Account_id = account.id";
-    private final String SQL_FIND_BY_ID = "SELECT account.login, account.password, admin.id FROM account INNER JOIN admin ON admin.Account_id = account.id WHERE admin.id = ?";
+    private final String SQL_FIND_ALL = "SELECT account.login, account.password, account.number, admin.id FROM account INNER JOIN admin ON admin.Account_id = account.id";
+    private final String SQL_FIND_BY_ID = "SELECT account.login, account.password, account.number, admin.id FROM account INNER JOIN admin ON admin.Account_id = account.id WHERE admin.id = ?";
     private final String SQL_CREATE = "INSERT INTO admin (Account_id) VALUES (?)";
     private final String SQL_FIND_ACCOUNT_ID = "SELECT admin.Account_id FROM admin WHERE admin.id = ?";
 
@@ -36,17 +36,13 @@ public class AdminDaoImpl implements BaseDao<Admin> {
     @Override
     public List<Admin> findAll() throws DaoException {
         List<Admin> list = new ArrayList<>();
-        try (Connection connection = ConnectionPool.getInstance().takeConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
-                Admin admin = new Admin();
-                admin.setId(resultSet.getLong("admin.id"));
-                admin.setLogin(resultSet.getString("account.login"));
-                admin.setPassword(resultSet.getString("account.password"));
+                Admin admin = getAdminFromResultSet(resultSet);
                 list.add(admin);
             }
-        } catch (IOException | SQLException | InterruptedException e) {
+        } catch ( SQLException e) {
             logger.warn(e);
             throw new DaoException(e);
         }
@@ -56,18 +52,13 @@ public class AdminDaoImpl implements BaseDao<Admin> {
     @Override
     public Admin findById(long id) throws DaoException {
         Admin admin = null;
-        ResultSet resultSet;
-        try (Connection connection = ConnectionPool.getInstance().takeConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_ID)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_BY_ID)) {
             preparedStatement.setLong(1, id);
-            resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                admin = new Admin();
-                admin.setId(resultSet.getLong("admin.id"));
-                admin.setLogin(resultSet.getString("account.login"));
-                admin.setPassword(resultSet.getString("account.password"));
+                admin = getAdminFromResultSet(resultSet);
             }
-        } catch (IOException | SQLException | InterruptedException e) {
+        } catch (SQLException e) {
             logger.warn(e);
             throw new DaoException(e);
         }
@@ -80,12 +71,12 @@ public class AdminDaoImpl implements BaseDao<Admin> {
         account.setLogin(entity.getLogin());
         account.setPassword(entity.getPassword());
         if (AccountDaoImpl.getInstance().create(account)) {
-            account = AccountDaoImpl.getInstance().findByLogin(entity.getLogin());
+         //   account = AccountDaoImpl.getInstance().findByLogin(entity.getLogin());
             try (Connection connection = ConnectionPool.getInstance().takeConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE)) {
                 preparedStatement.setLong(1, account.getId());
                 preparedStatement.executeUpdate();
-            } catch (IOException | SQLException | InterruptedException e) {
+            } catch ( SQLException  e) {
                 logger.warn(e);
                 throw new DaoException(e);
             }
@@ -108,7 +99,7 @@ public class AdminDaoImpl implements BaseDao<Admin> {
             } else {
                 return false;
             }
-        } catch (IOException | SQLException | InterruptedException e) {
+        } catch (SQLException  e) {
             logger.error(e);
             throw new DaoException(e.getMessage());
         }
@@ -130,9 +121,18 @@ public class AdminDaoImpl implements BaseDao<Admin> {
             } else {
                 return false;
             }
-        } catch (IOException | SQLException | InterruptedException e) {
+        } catch (SQLException e) {
             logger.error(e);
             throw new DaoException(e.getMessage());
         }
+    }
+
+    private Admin getAdminFromResultSet(ResultSet resultSet) throws SQLException {
+        Admin admin = new Admin();
+        admin.setId(resultSet.getLong("admin.id"));
+        admin.setLogin(resultSet.getString("account.login"));
+        admin.setPassword(resultSet.getString("account.password"));
+        admin.setNumber(resultSet.getString("account.number"));
+        return admin;
     }
 }

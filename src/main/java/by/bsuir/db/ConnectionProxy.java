@@ -49,11 +49,7 @@ public class ConnectionProxy implements Connection {
     }
 
     public void close() throws SQLException {
-        try {
-            ConnectionPool.getInstance().reverseConnection(this);
-        }catch (IOException | InterruptedException e){
-            logger.warn(e);
-        }
+        ConnectionPool.getInstance().reverseConnection(this);
     }
 
     public boolean isClosed() throws SQLException {

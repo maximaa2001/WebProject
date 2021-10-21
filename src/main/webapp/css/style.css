@@ -1,0 +1,290 @@
+body{
+    margin:0;
+    padding:0;
+    background-color: #2F2FA2;
+}
+a{
+    text-decoration: none;
+}
+li{
+    list-style-type: none;
+}
+nav{
+    width: 100%;
+    height: 80px;
+    background-color: #242582;
+    display: flex;
+    justify-content: space-between;
+}
+
+#block_activity{
+    height: 100%;
+    display: flex;
+    align-content: center;
+    justify-self: end;
+    align-self: center;
+    padding-right: 10px;
+}
+
+#block_activity div{
+    height: 30px;
+    width: 100px;
+    background: linear-gradient(to right,#f14a77 , #f9595f,#fd6353);
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    align-self: end;
+    margin-bottom: 5px;
+    transition: 0.5s;
+}
+
+#block_activity div:hover{
+    transform: translate(0, -5px);
+    transition: 0.5s;
+}
+
+#block_activity div a {
+    font-family: Segoe UI, serif;
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+#menu_reg_in{
+    margin-left: 5px;
+}
+
+#name{
+    justify-self: end;
+    /*font-family: Playbill, fantasy;*/
+    font-family: Montserrat;
+    color: #F64C72;
+    align-self: center;
+    padding-left: 20px;
+    /*letter-spacing:5px;*/
+    font-size: 40px;
+}
+
+#catalog{
+    font-family:  Playbill, fantasy;
+    font-size: 30px;
+    align-self: end;
+    margin-left: -50px;
+    background-color: red;
+    justify-self:self-start;
+}
+
+#menu_profile{
+    height: 100%;
+    margin-top: 0;
+    width: 300px;
+    position: relative;
+}
+
+
+#menu_profile a{
+    text-align: center;
+}
+
+.role{
+    color: white;
+    margin-top: 10px;
+    font-size: 20px;
+    margin-left: -35px;
+    display: inline;
+}
+
+#role_user{
+    color: green;
+    display: inline;
+    font-size: 20px;
+}
+
+#role_user{
+    color: red;
+    display: inline;
+    font-size: 20px;
+}
+
+#menu_reference{
+    display: flex;
+    font-family: Segoe UI, serif;
+    font-weight: 600;
+    font-size: 30px;
+    /*background-color: red;*/
+    width: 100%;
+}
+
+#menu_reference li{
+    margin-left: 30px;
+    align-self: center;
+}
+
+.menu_ref_item{
+    color: white;
+}
+
+.menu_ref_item:hover{
+    color: #99738E;
+}
+
+.btn_my_profile{
+    position: absolute;
+    bottom: 0;
+    height: 30px;
+    left: 0;
+    width: 60%;
+    margin-bottom: 5px;
+    /*background-color: #F64C72 ;*/
+    background: #f14a77;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    font-family: Segoe UI, serif;
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    transition: 0.5s;
+}
+.btn_my_profile:hover{
+    transform: translate(0, -5px);
+    transition: 0.5s;
+}
+
+#submenu_user, #submenu_admin{
+    position: absolute;
+    bottom: -90px;
+    left: -60px;
+}
+
+#submenu_user li, #submenu_admin li{
+    position: relative;
+
+}
+
+.hidden{
+    transition: 2s;
+    overflow: hidden;
+    opacity: 0;
+    height: 0;
+}
+
+.visible{
+    transition: 2s;
+    overflow: visible;
+    opacity: 1;
+    height: auto;
+}
+
+.list_element{
+    width: 100%;
+    height: 100%;
+    margin-top: 8px;
+    font-size: 20px;
+    /*background-color: red;*/
+    border-radius: 10px;
+    text-align: center;
+    background: linear-gradient(to right,#f14a77 , #f9595f,#fd6353);
+}
+
+.list_element a{
+    width: 100%;
+    height: 100%;
+    color: white;
+}
+/*
+        styles for form auth
+*/
+
+#div_form{
+    background-color: #242582;
+    width: 500px;
+    height: 300px;
+    margin: 80px auto;
+    border-radius: 20px;
+    border: 3px solid white;
+}
+
+.firstForm{
+    display: flex;
+    flex-direction: column;
+}
+
+#label_auth{
+    font-family: Montserrat, serif;
+    color: #F64C72;
+    font-weight: bold;
+    font-size: 35px;
+    align-self: center;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.label_field{
+    font-family: Montserrat, serif;
+    color: #F64C72;
+    font-weight: bold;
+    font-size: 20px;
+    letter-spacing: 2px;
+    margin-left: 10px;
+}
+
+#label_login input{
+    margin-left: 58px;
+}
+
+#label_password input{
+    margin-left: 10px;
+    margin-top: 20px;
+}
+
+.inputData{
+    border-radius: 10px;
+    margin-left: 20px;
+    height: 30px;
+    width: 350px;
+    border: 2px solid #242582;
+    outline: none;
+    font-family: Montserrat, serif;
+    padding-left: 5px;
+    font-size: 15px;
+}
+.inputData:focus{
+    border-color: #F64C72;
+}
+
+#btn_submit{
+    width: 110px;
+    height: 30px;
+    margin-top: 30px;
+    align-self: center;
+    border-radius: 10px;
+    cursor: pointer;
+    background: linear-gradient(to right,#f14a77 , #f9595f,#fd6353);
+    color: white;
+    font-family: Montserrat, serif;
+    font-weight: bold;
+    border: 0 solid #242582;
+    letter-spacing: 2px;
+    font-size: 20px;
+    transition: 0.5s;
+}
+
+#btn_submit:hover{
+    transform: translate(0, -5px);
+    transition: 0.5s;
+}
+
+#no_account{
+    font-family: Montserrat, serif;
+    font-weight: bold;
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+    margin-left: 180px;
+}
+
+#no_account:hover{
+    text-decoration: underline;
+}
