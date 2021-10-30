@@ -31,7 +31,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> findAllProduct() throws ServiceException {
-        List<Product> products = new ArrayList<>();
+        List<Product> products;
         transaction.startNoTransaction(productDao);
         try{
             products = productDao.findAll();
@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Set<Product> findAllProductByUserId(long id) throws ServiceException {
-        Set<Product> products = new HashSet<>();
+        Set<Product> products;
         transaction.startNoTransaction(productDao);
         try {
             products = productDao.getAllProductsByUserId(id);
@@ -61,7 +61,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public boolean createProduct(Product product) throws ServiceException {
-        boolean result = false;
+        boolean result;
         transaction.startNoTransaction(productDao);
         try{
             result = productDao.create(product);
@@ -76,7 +76,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public boolean deleteProductById(long id) throws ServiceException {
-        boolean result = false;
+        boolean result;
         transaction.startNoTransaction(productDao);
         try{
             result = productDao.deleteById(id);
@@ -91,7 +91,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public boolean updateProduct(Product product) throws ServiceException {
-        boolean result = false;
+        boolean result;
         transaction.startNoTransaction(productDao);
         try{
             result = productDao.update(product);

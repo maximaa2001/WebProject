@@ -27,7 +27,7 @@
 
   <div id="footer_third_block">
     <div id="footer_become_user">Стать пользователем?</div>
-    <div id="footer_reg"> <a href="#">Зарегистрироваться</a></div>
+    <div id="footer_reg"> <a href="${pageContext.request.contextPath}/controller?command=go_to_reg_in">Зарегистрироваться</a></div>
   </div>
 </footer>
 

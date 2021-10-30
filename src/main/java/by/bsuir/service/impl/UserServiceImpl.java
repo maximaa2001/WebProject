@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAllUsers() throws ServiceException {
-        List<User> users = new ArrayList<>();
+        List<User> users;
         transaction.startNoTransaction(userDao);
         try {
             users = userDao.findAll();
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserById(long id) throws ServiceException {
-        User user = null;
+        User user;
         transaction.startNoTransaction(userDao);
         try {
             user = userDao.findById(id);
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByProductId(long id) throws ServiceException {
-        User user = null;
+        User user;
         transaction.startNoTransaction(userDao);
         try {
             user = userDao.getUserByProductId(id);
@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByAccountId(long id) throws ServiceException {
-        User user = null;
+        User user;
         transaction.startNoTransaction(userDao);
         try {
             user = userDao.findUserByAccountId(id);
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAllUnApprovedUser() throws ServiceException {
-        List<User> users = new ArrayList<>();
+        List<User> users;
         transaction.startNoTransaction(userDao);
         try {
             users = userDao.findAllUnApprovedUser();
@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean changeStatus(long id) throws ServiceException {
-        boolean result = false;
+        boolean result;
         transaction.startNoTransaction(userDao);
         try {
             result = userDao.setUserApprove(id);

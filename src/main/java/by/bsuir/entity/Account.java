@@ -35,8 +35,8 @@ public class Account extends BaseEntity {
     @Override
     public String toString() {
         return "Account{" +
-                "login='" + login + '\'' +
-                ", password='" + password + '\'' +
+                "login =" + login + '\'' +
+                ", password = " + password + '\'' +
                 "number = " + number +
                 '}' + super.toString();
     }

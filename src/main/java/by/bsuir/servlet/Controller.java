@@ -35,7 +35,6 @@ public class Controller extends HttpServlet {
     private void requestProcess(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         RequestCommand requestCommand = new RequestCommand(req);
         Command command = CommandFactory.getCommand(requestCommand);
-        System.out.println(command);
         if(command != null){
             ResponseCommand respCommand = command.execute(requestCommand);
             requestCommand.updateRequest(req);

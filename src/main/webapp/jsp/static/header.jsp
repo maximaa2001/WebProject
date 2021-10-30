@@ -19,10 +19,10 @@
     <div id="name">MyFirstWebProject</div>
     <ul id="menu_reference">
         <li>
-            <a href="#" class="menu_ref_item">Главная</a>
+            <a href="${pageContext.request.contextPath}/controller?command=go_to_main" class="menu_ref_item">Главная</a>
         </li>
         <li>
-            <a href="#" class="menu_ref_item">Каталог</a>
+            <a href="${pageContext.request.contextPath}/controller?command=show_catalog" class="menu_ref_item">Каталог</a>
         </li>
     </ul>
 
@@ -37,17 +37,17 @@
             <c:choose>
                 <c:when test="${role == 'user'}">
                     <ul id="menu_profile">
-                        <div class="role">Role:</div> <div id="role_admin">${role}</div>
+                        <div class="role">Role:</div> <div id="role_user">${role}</div>
                         <li class="profile"><a class="btn_my_profile">Мой профиль</a>
                             <ul id="submenu_user" class="hidden">
                                 <li class="submenu_li">
-                                    <div id="list_products" class="list_element"><a href="#">Список продуктов</a></div>
+                                    <div id="list_products" class="list_element"><a href="${pageContext.request.contextPath}/controller?command=find_user_product">Список моих объявлений</a></div>
                                 </li>
                                 <li class="submenu_li">
                                     <div id="edit_profile" class="list_element"><a href="#">Редактировать профиль</a></div>
                                 </li>
                                 <li class="submenu_li">
-                                    <div id="log_out_iser" class="list_element"><a href="#">Выход</a></div>
+                                    <div id="log_out_iser" class="list_element"><a href="${pageContext.request.contextPath}/controller?command=log_out">Выход</a></div>
                                 </li>
                             </ul>
                         </li>
@@ -55,7 +55,7 @@
                 </c:when>
                 <c:when test="${role == 'admin'}">
                     <ul id="menu_profile">
-                        <div id="role">Role:</div> <div id="role_user">${role}</div>
+                        <div id="role">Role:</div> <div id="role_admin">${role}</div>
                         <li class="profile"><a class="btn_my_profile">Мой профиль</a>
                             <ul id="submenu_admin" class="hidden">
                                 <li class="submenu_li">
@@ -65,7 +65,7 @@
                                     <div id="all_users" class="list_element"><a href="#">Список пользователей</a></div>
                                 </li>
                                 <li class="submenu_li">
-                                    <div id="log_out_admin" class="list_element"><a href="#">Выход</a></div>
+                                    <div id="log_out_admin" class="list_element"><a href="${pageContext.request.contextPath}/controller?command=log_out">Выход</a></div>
                                 </li>
                             </ul>
                         </li>

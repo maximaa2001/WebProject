@@ -37,6 +37,9 @@ public class ApplicationProperties {
 
     public int getMaxConnectionPoolSize() throws IOException {
         return Integer.parseInt(propertyReader.getProperties().getProperty("maxConnectionPoolSize"));
+    }
 
+    public String getImagePath() throws IOException {
+        return propertyReader.getProperties().getProperty("PathToImage");
     }
 }

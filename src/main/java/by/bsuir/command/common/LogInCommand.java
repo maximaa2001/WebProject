@@ -24,34 +24,35 @@ public class LogInCommand implements Command {
         try {
             if(accountService.checkLoginAndPassword(login, password)){
                 Account account = accountService.findByLogin(login);
-                requestCommand.addSessionAttribute(Constant.PARAMETER_ACCOUNT,account);
+                requestCommand.addSessionAttribute(Constant.ATTRIBUTE_ACCOUNT,account);
                 User user = userService.findUserByAccountId(account.getId());
                 if(user == null){
-                    requestCommand.addSessionAttribute(Constant.PARAMETER_ROLE,"admin");
+                    requestCommand.addSessionAttribute(Constant.ATTRIBUTE_ROLE,"admin");
                     response.setTypeTransition(TransitionType.FORWARD);
-                    response.setPath("/jsp/cabinet.jsp");
+                    response.setPath("/jsp/main.jsp");
                 }else {
                     if(user.isApproved()){
-                        requestCommand.addSessionAttribute(Constant.PARAMETER_ROLE,"user");
+                        requestCommand.addSessionAttribute(Constant.ATTRIBUTE_ROLE,"user");
+                        requestCommand.addSessionAttribute(Constant.ATTRIBUTE_USER,user);
                         response.setTypeTransition(TransitionType.FORWARD);
-                        response.setPath("/jsp/cabinet.jsp");
+                        response.setPath("/jsp/main.jsp");
                     }else {
-                        requestCommand.addRequestAttribute(Constant.PARAMETER_UN_APPROVE,"Admin didn't agree with your profile");
+                        requestCommand.addRequestAttribute(Constant.PARAMETER_UN_APPROVE,"Wait for the admin to approve your profile");
                         response.setTypeTransition(TransitionType.FORWARD);
                         response.setPath("/jsp/log_in.jsp");
                     }
                 }
             }else {
                 if(accountService.checkLogin(login)){
-                    requestCommand.addRequestAttribute(Constant.PARAMETER_INCORRECT_PASSWORD,"incorrect password");
+                    requestCommand.addRequestAttribute(Constant.PARAMETER_INCORRECT_PASSWORD,"Incorrect password");
                 }else {
-                    requestCommand.addRequestAttribute(Constant.PARAMETER_INCORRECT_LOGIN,"incorrect login");
+                    requestCommand.addRequestAttribute(Constant.PARAMETER_INCORRECT_LOGIN,"Incorrect login");
                 }
                 response.setTypeTransition(TransitionType.FORWARD);
                 response.setPath("/jsp/log_in.jsp");
             }
         } catch (ServiceException e) {
-            logger.log(Level.ERROR,"Error while login", e);
+            logger.log(Level.ERROR,"Error while login command", e);
             response.setTypeTransition(TransitionType.REDIRECT);
             response.setPath("/jsp/error.jsp");
         }

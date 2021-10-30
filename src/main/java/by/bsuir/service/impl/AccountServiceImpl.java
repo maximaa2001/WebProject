@@ -1,5 +1,6 @@
 package by.bsuir.service.impl;
 
+import by.bsuir.command.Constant;
 import by.bsuir.dao.Transaction;
 import by.bsuir.dao.impl.AccountDaoImpl;
 import by.bsuir.dao.impl.UserDaoImpl;
@@ -65,9 +66,9 @@ public class AccountServiceImpl implements AccountService {
     public Account registerUser(Map<String, String> map) throws ServiceException {
         UserDaoImpl userDao = UserDaoImpl.getInstance();
         Account account = new Account();
-        account.setLogin(map.get("LOGIN"));
-        account.setPassword(hashGenerator.hash(map.get("PASSWORD")));
-        account.setNumber(map.get("NUMBER"));
+        account.setLogin(map.get(Constant.PARAMETER_LOGIN));
+        account.setPassword(hashGenerator.hash(map.get(Constant.PARAMETER_PASSWORD)));
+        account.setNumber(map.get(Constant.PARAMETER_NUMBER));
         transaction.startYesTransaction(accountDao, userDao);
         try {
             accountDao.create(account);

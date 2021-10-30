@@ -7,7 +7,7 @@ console.log("kdjgkbsx");
 for (let i = 0; i < buttons.length; i++) {
     buttons[i].addEventListener("mousedown", function () {
         let submenu = document.querySelector(".hidden");
-        console.log("ok");
+        // console.log("ok");
         if (submenu != null) {
             submenu.classList.remove("hidden");
             submenu.classList.add("visible");
@@ -30,7 +30,7 @@ for (let i = 0; i < listElements.length; i++) {
         clearInterval(ID2[i]);
         let xLeft = 0;
         ID1[i] = setInterval(function () {
-            if (xLeft > 10) {
+            if (xLeft > 8) {
                 clearInterval(ID1[i]);
             }else {
                 xLeft = xLeft + 2;

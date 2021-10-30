@@ -90,6 +90,10 @@ public class RequestCommand {
         requestAttributes.put(key,value);
     }
 
+    public void removeRequestAttribute(String key){
+        requestAttributes.remove(key);
+    }
+
     public boolean isInvalidateSession() {
         return invalidateSession;
     }

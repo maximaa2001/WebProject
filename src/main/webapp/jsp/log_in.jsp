@@ -22,16 +22,17 @@
     <form class="firstForm" method="post" action="controller">
         <input type="hidden" name="command" value="log_in">
         <label id="label_auth">Авторизация</label>
-        <label id="label_login" class="label_field">Login<input class="inputData" type="text" name="login" placeholder="email" autocomplete="off"></label>
-        <label id="label_password" class="label_field">Password<input class="inputData" type="password" name="password" placeholder="password"></label>
-        <input  id="btn_submit" type="submit" value="Вход">
+        <label id="label_login" class="label_field">Login<input class="inputData" type="text" name="login" placeholder="email" autocomplete="off" required></label>
+        <label id="label_password" class="label_field">Password<input class="inputData" type="password" name="password" placeholder="password" autocomplete="off" required></label>
+        <input  id="btn_submit_log_in" type="submit" value="Вход">
     </form>
-    <div id="no_account"><a >Нет аккаунта?</a></div>
+    <div id="block_error">${requestScope.un_approve} ${requestScope.incorrect_login} ${requestScope.incorrect_password}</div>
+    <div id="no_account"><a href="${pageContext.request.contextPath}/controller?command=go_to_reg_in">Нет аккаунта?</a></div>
 </div>
 
-${requestScope.un_approve}
-${requestScope.incorrect_login}
-${requestScope.incorrect_password}
+<%--${requestScope.un_approve}--%>
+<%--${requestScope.incorrect_login}--%>
+<%--${requestScope.incorrect_password}--%>
 
 
 <jsp:include page="static/footer.jsp"></jsp:include>

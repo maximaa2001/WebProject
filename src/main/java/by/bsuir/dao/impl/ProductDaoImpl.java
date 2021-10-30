@@ -21,11 +21,15 @@ public class ProductDaoImpl extends AbstractDao<Product> implements ProductDao {
     private static final Logger logger = Logger.getLogger(ProductDaoImpl.class);
     private static ProductDaoImpl instance;
     private final static String SQL_LIST_PRODUCTS_BY_USER = "SELECT * FROM product WHERE product.User_id = ?";
-    private final static String SQL_FIND_ALL = "SELECT product.id, product.name, product.price FROM product";
-    private final static String SQL_FIND_BY_ID = "SELECT product.id, product.name, product.price FROM product WHERE product.id = ?";
-    private final static String SQL_CREATE = "INSERT INTO product (product.name, product.price, product.User_id) VALUES (?,?,?)";
+    private final static String SQL_FIND_ALL = "SELECT * FROM product";
+    private final static String SQL_FIND_BY_ID = "SELECT * FROM product WHERE product.id = ?";
+    private final static String SQL_CREATE = "INSERT INTO product (product.name, product.description, " +
+            "product.date, product.run, product.engine_volume, product.type_transmission, product.price, " +
+            "product.image_path, product.User_id) VALUES (?,?,?,?,?,?,?,?,?)";
     private final static String SQL_DELETE = "DELETE FROM product WHERE id = ?";
-    private final static String SQL_UPDATE = "UPDATE product SET product.name = ?, product.price = ? WHERE product.id = ?";
+    private final static String SQL_UPDATE = "UPDATE product SET product.name = ?, product.description = ?, " +
+            "product.date = ?, product.run = ?, product.engine_volume = ?, product.type_transmission = ?, " +
+            "product.price = ?, product.image_path = ? WHERE product.id = ?";
 
     private ProductDaoImpl() {
     }
@@ -72,11 +76,10 @@ public class ProductDaoImpl extends AbstractDao<Product> implements ProductDao {
     public boolean create(Product entity) throws DaoException {
         long userId = entity.getUser().getId();
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_CREATE)) {
-            preparedStatement.setString(1, entity.getName());
-            preparedStatement.setInt(2, entity.getPrice());
-            preparedStatement.setLong(3, userId);
-            preparedStatement.executeUpdate();
-            return true;
+            getFullPreparedStatement(preparedStatement, entity);
+            preparedStatement.setLong(9, userId);
+            int result = preparedStatement.executeUpdate();
+            return result != 0;
         } catch (SQLException e) {
             logger.warn(e);
             throw new DaoException(e);
@@ -98,11 +101,10 @@ public class ProductDaoImpl extends AbstractDao<Product> implements ProductDao {
     @Override
     public boolean update(Product entity) throws DaoException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE)) {
-            preparedStatement.setString(1, entity.getName());
-            preparedStatement.setInt(2, entity.getPrice());
-            preparedStatement.setLong(3, entity.getId());
-            preparedStatement.executeUpdate();
-            return true;
+            getFullPreparedStatement(preparedStatement, entity);
+            preparedStatement.setLong(9, entity.getId());
+            int result = preparedStatement.executeUpdate();
+            return result != 0;
         } catch (SQLException e) {
             logger.warn(e);
             throw new DaoException(e);
@@ -116,10 +118,7 @@ public class ProductDaoImpl extends AbstractDao<Product> implements ProductDao {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                Product product = new Product();
-                product.setId(resultSet.getLong("product.id"));
-                product.setName(resultSet.getString("product.name"));
-                product.setPrice(resultSet.getInt("product.price"));
+                Product product =  getProductFromResultSet(resultSet);
                 set.add(product);
             }
         } catch (SQLException e) {
@@ -133,7 +132,32 @@ public class ProductDaoImpl extends AbstractDao<Product> implements ProductDao {
         Product product = new Product();
         product.setId(resultSet.getLong("product.id"));
         product.setName(resultSet.getString("product.name"));
+        product.setDescription(resultSet.getString("product.description"));
+        product.setDate(resultSet.getInt("product.date"));
+        product.setRun(resultSet.getInt("product.run"));
+        product.setVolumeEngine(resultSet.getFloat("product.engine_volume"));
+        product.setTypeTransmission(translateTypeTransmission(resultSet.getByte("product.type_transmission")));
         product.setPrice(resultSet.getInt("product.price"));
+        product.setImagePath(resultSet.getString("product.image_path"));
         return product;
+    }
+
+    private void getFullPreparedStatement(PreparedStatement preparedStatement, Product entity) throws SQLException {
+        preparedStatement.setString(1, entity.getName());
+        preparedStatement.setString(2, entity.getDescription());
+        preparedStatement.setInt(3, entity.getDate());
+        preparedStatement.setInt(4, entity.getRun());
+        preparedStatement.setFloat(5, entity.getVolumeEngine());
+        preparedStatement.setByte(6, translateTypeTransmission(entity.getTypeTransmission()));
+        preparedStatement.setInt(7, entity.getPrice());
+        preparedStatement.setString(8, entity.getImagePath());
+    }
+
+    private String translateTypeTransmission(byte number){
+        return (number == 0) ? "механика": "автомат";
+    }
+
+    private byte translateTypeTransmission(String str){
+        return (byte) ((str.equals("механика")) ? 0: 1);
     }
 }
