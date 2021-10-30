@@ -1,0 +1,343 @@
+body{
+    background-color: #2F2FA2;
+    margin: 0 0;
+    padding: 0 0;
+    box-sizing: border-box;
+}
+
+label{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+.div_finder{
+    width: 60%;
+    height: 250px;
+    background-color: #242582;
+    margin: 10px auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.div_finder_top{
+    display: flex;
+}
+
+.div_year_finder{
+    width: 33.3%;
+    height: 60px;
+    display: flex;
+    border-right: 2px solid silver;
+}
+.block_year{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
+
+.label_from_year, .label_to_year, .label_from_engine, .label_to_engine{
+    justify-self: start;
+    font-family: Montserrat;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 5px;
+    opacity: 0;
+    transition: 1s;
+}
+
+.label_from_year, .label_to_year {
+    padding-left: 30%;
+}
+
+.label_from_engine{
+    padding-left: 20%;
+}
+
+.label_to_engine{
+    padding-left: 35%;
+
+}
+
+.select_year_from, .select_year_to, .select_engine_from, .select_engine_to{
+    width: 80%;
+    height: 30px;
+    border-width: 0;
+    border-radius: 5px;
+    text-align: right;
+    padding-right: 10px;
+    font-family: Montserrat;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #2F2FA2;
+    outline: none;
+    margin-left: 8px;
+}
+
+.div_price_finder{
+    width: 33.3%;
+    height: 60px;
+    display: flex;
+    position: relative;
+    border-right: 2px solid silver;
+}
+
+#start_price, #end_price{
+    width: 35%;
+    height: 30px;
+    position: absolute;
+    margin-left: 5px;
+    bottom: 0;
+    outline: none;
+    font-family: Montserrat;
+    font-weight: bold;
+    color: #2F2FA2;
+    border-radius: 5px;
+    padding-left: 10px;
+    border-color: transparent;
+}
+
+.label_price_from, .label_price_end{
+    font-family: Montserrat;
+    font-weight: bold;
+    font-size: 16px;
+    color: #2F2FA2;
+    position: absolute;
+    top: 30px;
+    opacity: 1;
+    transition: 1s;
+}
+.label_price_from{
+    left: 28px;
+}
+
+.label_price_end{
+    left: 185px
+}
+
+#start_price:focus + .label_price_from,
+#start_price:not(:placeholder-shown) + .label_price_from,
+#end_price:focus + .label_price_end,
+#end_price:not(:placeholder-shown) + .label_price_end {
+    top: 6px;
+    font-size: 14px;
+    transition: 1s;
+    color: white;
+}
+
+#end_price{
+    left: calc(35% + 30px);
+}
+
+.dollar{
+    position: absolute;
+    right: 15px;
+    bottom: 5px;
+    width: 10px;
+    height: 30px;
+    font-family: Montserrat;
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+}
+
+.div_engine_finder{
+    width: 33.3%;
+    height: 60px;
+    display: flex;
+}
+
+.block_engine{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
+
+.label_from_engine, .label_to_engine{
+
+}
+
+.select_engine_from, .select_engine_to{
+    margin-left: 10px;
+}
+
+.div_finder_down{
+    width: 100%;
+    height: 100px;
+    display: flex;
+}
+
+.div_type_transmission{
+    width: 33.3%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.both_type{
+    align-self: center;
+    display: flex;
+}
+
+#label_mechanic, #label_automat{
+    font-family: Montserrat;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+#label_mechanic:hover, #label_automat:hover{
+    background-color: #A9A9A9;
+}
+
+
+/*#input_mechanic:focus ~ label[for="input_mechanic"],*/
+/*#input_automat:focus ~ label[for="input_automat"]{*/
+/*    background-color: yellow;*/
+/*}*/
+
+
+#label_mechanic{
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    border: 2px solid silver;
+    border-right-width: 1px;
+
+}
+
+#label_automat{
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 2px solid silver;
+    border-left-width: 1px;
+}
+
+.blue_line{
+    width: 100%;
+    margin-top: 8px;
+    height: 15px;
+    background-color: #2F2FA2;
+}
+
+.div_run_search{
+    width: 33.3%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+#input_run, #input_name{
+    width: 65%;
+    height: 30px;
+    align-self: center;
+    border-radius: 5px;
+    border-color: transparent;
+    padding-left: 10px;
+    outline: none;
+    font-family: Montserrat;
+    font-weight: bold;
+    border-color: transparent;
+}
+
+#label_run, #label_name{
+    position: absolute;
+    top: 40px;
+    font-family: Montserrat;
+    font-weight: bold;
+    color: #2F2FA2;
+    margin-left: 4%;
+    transition: 1s;
+}
+
+#label_run{
+    left: 45px;
+    font-size: 15px;
+}
+
+#label_name{
+    left: 90px;
+    font-size: 16px;
+}
+
+#input_run:focus{
+    border-color: transparent;
+}
+
+#input_run:focus + #label_run,
+#input_run:not(:placeholder-shown) + #label_run{
+    top: 10px;
+    color: white;
+    font-size: 12px;
+}
+#input_name:focus + #label_name,
+#input_name:not(:placeholder-shown) + #label_name {
+    top: 10px;
+    color: white;
+    font-size: 15px;
+}
+
+.div_name_search{
+    width: 33.3%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.div_submit{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: end;
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+}
+
+.submit_info, #drop{
+    font-family: Montserrat;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    border-color: transparent;
+}
+
+.submit_info{
+    width: 170px;
+    height: 40px;
+    align-self: center;
+    border-radius: 5px;
+    border-color: transparent;
+
+    background-color: #0BB978;
+}
+
+.submit_info:hover{
+    background-color: #199C6C;
+}
+
+#drop{
+    width: 130px;
+    height: 30px;
+    position: absolute;
+    bottom: 10px;
+    left: 30px;
+    background-color: #F64C72;
+
+}
+
+#drop:hover{
+    background-color: #DC274B;
+}

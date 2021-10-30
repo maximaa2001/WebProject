@@ -30,11 +30,6 @@ public class ConnectionPool {
             applicationProperties = ApplicationProperties.getInstance();
             connectionPoolSize = applicationProperties.getConnectionPoolSize();
             maxConnectionPoolSize = applicationProperties.getMaxConnectionPoolSize();
-            System.out.println(applicationProperties.getUrl());
-            System.out.println(applicationProperties.getUser());
-            System.out.println(applicationProperties.getPassword());
-            System.out.println(applicationProperties.getConnectionPoolSize());
-            System.out.println(applicationProperties.getMaxConnectionPoolSize());
         } catch (IOException e) {
             logger.log(Level.ERROR, "Error while creating connection pool");
         }
@@ -58,7 +53,6 @@ public class ConnectionPool {
                 DriverManager.registerDriver(driver);
                 Connection connection = DriverManager.getConnection(applicationProperties.getUrl(),
                       applicationProperties.getUser(), applicationProperties.getPassword());
-                System.out.println(connection);
                 availableConnections.add(new ConnectionProxy(connection));
             }
         } catch (IOException | SQLException e) {

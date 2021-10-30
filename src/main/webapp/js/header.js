@@ -1,5 +1,4 @@
 let buttons = document.querySelectorAll(".btn_my_profile");
-console.log("kdjgkbsx");
 
 /*
 выпадающее меню
