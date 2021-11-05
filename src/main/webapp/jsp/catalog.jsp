@@ -12,6 +12,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Title</title>
     <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/css/footer_end.css">
 </head>
 <body>
 
@@ -21,6 +22,7 @@
 <jsp:include page="static/header.jsp"></jsp:include>
 
 <jsp:include page="static/search.jsp"></jsp:include>
+
 
 <c:forEach var="element" items="${sessionScope.list_products}">
     <div class="item"><div class="div_image"><img src="${element.imagePath}" alt="Фото не найдено"></div><div class="div_name">

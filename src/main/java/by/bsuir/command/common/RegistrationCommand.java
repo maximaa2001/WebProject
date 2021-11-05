@@ -23,7 +23,6 @@ public class RegistrationCommand implements Command {
         String password_repeat = requestCommand.getRequestParameter(Constant.PARAMETER_PASSWORD_REPEAT);
         String number = requestCommand.getRequestParameter(Constant.PARAMETER_NUMBER);
         AccountServiceImpl accountService = AccountServiceImpl.getInstance();
-      //  UserServiceImpl userService = UserServiceImpl.getInstance();
         Map<String, String> userParam = new HashMap<>();
         userParam.put(Constant.PARAMETER_LOGIN, login);
         userParam.put(Constant.PARAMETER_PASSWORD, password);

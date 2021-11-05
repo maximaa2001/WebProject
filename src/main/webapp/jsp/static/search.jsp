@@ -10,9 +10,12 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored="false"%>
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" charset="UTF-8" />
     <title>Title</title>
+<%--    <style>--%>
+<%--        <%@include file="/css/search.css"%>--%>
+<%--    </style>--%>
     <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/css/search.css">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 <body>
 <form class="div_finder" action="controller" method="post">
@@ -92,10 +95,32 @@
 
 </form>
 
+<div class="div_sort">
+    <form class="form_sort">
+        <span class="span_start">Сначала</span>
+        <select class="select_sort">
+            <option selected>Без сортировки</option>
+            <option>Дорогие</option>
+            <option>Дешевые</option>
+            <option>Новые по году</option>
+            <option>Старые по году</option>
+            <option>С наименьшим пробегом</option>
+            <option>С наибольшим объемом</option>
+            <option>С наименьшим объемом</option>
+        </select>
+
+        <input class="btn_sort" type="submit" value="Отсортировать">
+    </form>
+</div>
 <%--<script charset="UTF-8">--%>
 <%--    <%@include file="/js/search.js"%>--%>
 <%--</script>--%>
-
+<script>
+    function setText(a){
+        a.textContent = "Любой";
+        a.value = "Любой";
+    }
+</script>
 <script charset="UTF-8" src="${pageContext.request.contextPath}/js/search.js"></script>
 </body>
 </html>

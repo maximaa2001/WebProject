@@ -1,13 +1,12 @@
 package by.bsuir.servlet;
 
-import by.bsuir.command.Command;
-import by.bsuir.command.RequestCommand;
-import by.bsuir.command.ResponseCommand;
-import by.bsuir.command.TransitionType;
+import by.bsuir.command.*;
 import by.bsuir.db.ConnectionPool;
 import by.bsuir.factory.CommandFactory;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequestListener;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +19,10 @@ import java.util.Properties;
 
 
 @WebServlet(urlPatterns = "/controller")
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 5
+        , maxFileSize = 1024 * 1024 * 5
+        , maxRequestSize = 1024 * 1024 * 5 * 5)
 public class Controller extends HttpServlet {
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
       requestProcess(req,resp);

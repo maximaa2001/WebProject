@@ -11,11 +11,8 @@ for (let i = 2022; i >= 1910; i--){
     let option1 = document.createElement("option");
     let option2 = document.createElement("option");
     if(i === 2022){
-        option1.textContent = "Any";
-        option2.textContent = "Any";
-
-        option1.value = "Any";
-        option2.value = "Any";
+        setText(option1);
+        setText(option2);
     }else {
         option1.classList.add("option_from_year");
         option2.classList.add("option_to_year");
@@ -45,11 +42,8 @@ for (let i = 0.9; i <= 9.0; i = i + 0.1){
     let option2 = document.createElement("option");
 
     if(i === 0.9){
-        option1.innerHTML = "Any";
-        option2.innerHTML = "Any";
-
-        option1.value = "Any";
-        option2.value = "Any";
+       setText(option1);
+       setText(option2);
     }else {
         option1.classList.add("option_from_engine");
         option2.classList.add("option_to_engine");

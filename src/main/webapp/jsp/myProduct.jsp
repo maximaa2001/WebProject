@@ -12,12 +12,13 @@
     <title>Title</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+    <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/css/footer_end.css">
 </head>
 <body>
 <div class="wrapper">
     <div class="content">
 <jsp:include page="static/header.jsp"></jsp:include>
-<div id="create_product"> <div id="btn_create_product"><a href="#">Создать товар</a></div></div>
+<div id="create_product"> <div id="btn_create_product"><a href="${pageContext.request.contextPath}/controller?command=go_to_create_product">Создать товар</a></div></div>
 
         <div class="empty_set">${requestScope.empty_user_set_product}</div>
 

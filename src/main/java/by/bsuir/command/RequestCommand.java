@@ -1,26 +1,34 @@
 package by.bsuir.command;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+import java.io.IOException;
 import java.net.http.HttpRequest;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class RequestCommand {
+    private final static Logger logger = Logger.getLogger(RequestCommand.class);
     private Map<String,Object> requestAttributes;
     private Map<String,String[]> requestParameters;
     private Map<String,Object> sessionAttributes;
+    private Map<String, Part> requestParts;
+
     private boolean invalidateSession;
 
     public RequestCommand(HttpServletRequest request){
         requestAttributes = new HashMap<>();
         requestParameters = new HashMap<>();
         sessionAttributes = new HashMap<>();
+        requestParts = new HashMap<>();
         initRequestAttributes(request);
         initRequestParameters(request);
         initSessionAttributes(request);
+        initParts(request);
     }
 
     private void initRequestAttributes(HttpServletRequest request){
@@ -48,6 +56,20 @@ public class RequestCommand {
                 sessionAttributes.put(key, request.getSession().getAttribute(key));
             }
         }
+    }
+
+    private void initParts(HttpServletRequest request){
+        try {
+            Collection<Part> parts = request.getParts();
+            Object[] objects = parts.toArray();
+            for (int i = 0; i < objects.length; i++) {
+                Part part = (Part) objects[i];
+                requestParts.put(part.getName(),part);
+            }
+        }catch (ServletException | IOException e){
+            logger.log(Level.ERROR, "Error while init Parts");
+        }
+
     }
 
     public void updateRequest(HttpServletRequest request){
@@ -78,6 +100,10 @@ public class RequestCommand {
 
     public Object getSessionAttribute(String key){
         return sessionAttributes.get(key);
+    }
+
+    public Part getRequestPart(String key){
+        return requestParts.get(key);
     }
 
     public void addSessionAttribute(String key, Object value){

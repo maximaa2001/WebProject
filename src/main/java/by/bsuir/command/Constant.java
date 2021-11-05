@@ -7,6 +7,24 @@ public class Constant {
     public final static String PARAMETER_PASSWORD = "password";
     public final static String PARAMETER_PASSWORD_REPEAT = "password_repeat";
     public final static String PARAMETER_NUMBER = "number";
+    public final static String PARAMETER_PRODUCT_NAME = "name";
+    public final static String PARAMETER_PRODUCT_DATE = "date";
+    public final static String PARAMETER_PRODUCT_RUN = "run";
+    public final static String PARAMETER_PRODUCT_ENGINE = "volume_engine";
+    public final static String PARAMETER_PRODUCT_PRICE = "price";
+    public final static String PARAMETER_TYPE_TRANSMISSION = "type_transmission";
+    public final static String PARAMETER_PRODUCT_DESCRIPTION = "description";
+
+    public final static String PARAMETER_PRODUCT_IMAGE_1= "image_1";
+    public final static String PARAMETER_PRODUCT_IMAGE_2= "image_2";
+    public final static String PARAMETER_PRODUCT_IMAGE_3= "image_3";
+    public final static String PARAMETER_PRODUCT_IMAGE_4= "image_4";
+    public final static String PARAMETER_PRODUCT_IMAGE_5= "image_5";
+    public final static String PARAMETER_PRODUCT_IMAGE_6= "image_6";
+
+
+
+
     public final static String ATTRIBUTE_ACCOUNT = "account";
     public final static String ATTRIBUTE_USER = "user";
     public final static String ATTRIBUTE_ROLE = "role";
